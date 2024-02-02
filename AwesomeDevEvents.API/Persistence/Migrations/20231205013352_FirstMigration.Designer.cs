@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AwesomeDevEvents.API.Persistence.Migrations
 {
     [DbContext(typeof(DevEventsDbContext))]
-    [Migration("20231204223016_FirstMigration")]
+    [Migration("20231205013352_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />

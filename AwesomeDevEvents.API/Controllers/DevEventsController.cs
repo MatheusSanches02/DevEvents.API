@@ -16,7 +16,7 @@ namespace AwesomeDevEvents.API.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet("getAll")]
         public IActionResult GetAll() 
         {
             var devEvents = _context.DevEvents.Where(d => !d.IsDeleted).ToList();
@@ -24,7 +24,7 @@ namespace AwesomeDevEvents.API.Controllers
             return Ok(devEvents);
         }
 
-        [HttpGet("{id}")]   
+        [HttpGet("getById/{id}")]   
         public IActionResult GetById(Guid id) 
         {
             var devEvents = _context.DevEvents
@@ -39,7 +39,7 @@ namespace AwesomeDevEvents.API.Controllers
             return Ok(devEvents);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public IActionResult Post(DevEvent devEvent) 
         {
             _context.DevEvents.Add(devEvent);
@@ -49,7 +49,7 @@ namespace AwesomeDevEvents.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = devEvent.Id}, devEvent);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         public IActionResult Update(Guid id, DevEvent devEvent)
         {
             var devEvents = _context.DevEvents.SingleOrDefault(d => d.Id == id);
@@ -67,7 +67,7 @@ namespace AwesomeDevEvents.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public IActionResult Delete(Guid id)
         {
             var devEvents = _context.DevEvents.SingleOrDefault(d => d.Id == id);
@@ -84,7 +84,7 @@ namespace AwesomeDevEvents.API.Controllers
             return NoContent();
         }
 
-        [HttpPost("{id}/speakers")]
+        [HttpPost("{id}/include-speakers")]
         public IActionResult PostSpeaker(Guid id,DevEventSpeaker speaker) 
         {
             speaker.DevEventId = id;
@@ -97,6 +97,24 @@ namespace AwesomeDevEvents.API.Controllers
             }
 
             _context.DevEventsSpeakers.Add(speaker);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+        
+        [HttpDelete("{speakerId}/delete-speakers")]
+        public IActionResult DeleteSpeaker(Guid speakerId) 
+        {
+
+            var speaker = _context.DevEventsSpeakers.SingleOrDefault(deSpeaker =>  deSpeaker.Id == speakerId);
+
+
+            if (speaker == null)
+            {
+                return NotFound();
+            }
+
+            _context.Remove(speaker);
             _context.SaveChanges();
 
             return NoContent();
